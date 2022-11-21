@@ -1,6 +1,7 @@
 FROM php:7.4-cli
 
-COPY ./php/index.php /usr/src/app/index.php
+# using volumes in docker-compose instead
+#COPY ./php/content/ /usr/src/app/
 
 WORKDIR /usr/src/app
 

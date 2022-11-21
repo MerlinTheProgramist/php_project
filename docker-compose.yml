@@ -8,6 +8,8 @@ services:
     restart: always
     ports:
       - 3306:3306
+    volumes:
+      - ./init.sql:/init.sql
       
   app:
     build:
@@ -17,3 +19,5 @@ services:
     restart: always
     ports:
       - 8000:8000
+    volumes:
+      - ./php/content:/usr/src/app
