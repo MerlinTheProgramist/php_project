@@ -1,0 +1,19 @@
+version: '3.7'
+services:
+  db:
+    build:
+      context: .
+      dockerfile: ./mysql/Dockerfile
+    image: php_project-db
+    restart: always
+    ports:
+      - 3306:3306
+      
+  app:
+    build:
+      context: .
+      dockerfile: ./php/Dockerfile
+    image: php_project-php
+    restart: always
+    ports:
+      - 8000:8000
