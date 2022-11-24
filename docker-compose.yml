@@ -9,7 +9,13 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - ./init.sql:/init.sql
+      - ./mysql/init.sql:/init.sql
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app
+      MYSQL_USER: mysql_user
+      MYSQL_PASSWORD: mysql_pass
+      MYSQL_ROOT_HOST: '%' 
       
   app:
     build:
