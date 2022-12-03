@@ -36,6 +36,15 @@ CREATE TABLE Profile(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(20) NOT NULL,
     profile_picture INT FOREIGN KEY REFERENCES Image(id) NOT NULL,
+    description VARCHAR(100) NOT NULL,
+    
+);
+
+CREATE TABLE Follow(
+    follower INT,
+    followed INT,
+    PRIMARY KEY, 
+    
 );
 
 CREATE TABLE User(
@@ -44,4 +53,5 @@ CREATE TABLE User(
     password CHAR(40) NOT NULL, -- hashed with SHA-1
     profile INT FOREIGN KEY REFERENCES Profile(id) NOT NULL,
 );
+
 
