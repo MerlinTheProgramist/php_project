@@ -54,14 +54,15 @@ CREATE TABLE Follow(
     follower_id INT,
     followed_id INT,
 
+    CONSTRAINT id PRIMARY KEY (follower_id,followed_id),
     FOREIGN KEY follower_id REFERENCES Profile(id),
     FOREIGN KEY followed_id REFERENCES Profile(id),
-    CONSTRAINT id PRIMARY KEY (follower_id,followed_id),
 );
 
 CREATE TABLE User(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     
+    email VARCHAR(20) NOT NULL,
     username VARCHAR(20) NOT NULL, 
     password CHAR(40) NOT NULL, -- hashed with SHA-1
     profile_id INT NOT NULL,
@@ -73,6 +74,7 @@ CREATE TALBE LIKE(
     profile_id INT,
     post_id INT,
 
+    CONSTRAINT id PRIMARY KEY (profile_id,post_id),
     FOREIGN KEY profile_id REFERENCES Profile(id),
     FOREIGN KEY post_id REFERENCES Post(id)
-)
+);
