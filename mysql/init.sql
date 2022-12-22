@@ -1,3 +1,4 @@
+
 CREATE USER 'mysql_user'@'%' IDENTIFIED BY 'mysql_pass';
 GRANT ALL PRIVILEGES ON *.* TO 'mysql_user'@'%';
 FLUSH PRIVILEGES;
@@ -5,18 +6,20 @@ FLUSH PRIVILEGES;
 CREATE DATABASE app;
 USE app;
 
-CREATE TABLE Post(
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    
-    author VARCHAR(20),
-    content TEXT
-);
-
-
 CREATE TABLE Image(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
     
-    image_data VARBINARY(MAX) NOT NULL
+    image_path VARCHAR(255) NOT NULL
+);
+
+CREATE TABLE Post(
+    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    
+    content VARCHAR(255) NOT NULL,
+    image_id INT,
+    creation_date TIMESTAMP NOT NULL default CURRENT_TIMESTAMP,
+
+    FOREIGN KEY (image_id) REFERENCES Image(id)
 );
 
 CREATE TABLE Comment(
@@ -24,20 +27,9 @@ CREATE TABLE Comment(
 
     post_id INT,
     content VARCHAR(255),
-    creation_date DATE NOT NULL default current_timestamp ON UPDATE current_timestamp, -- update automatic data on create and update 
+    creation_date TIMESTAMP NOT NULL default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- update automatic data on create and update 
 
-    FOREIGN KEY post_id REFERENCES Post(id)
-);
-
-CREATE TABLE Post(
-    id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    
-    content VARCHAR(999) NOT NULL,
-    image_id INT,
-    creation_date DATE NOT NULL default current_timestamp,
-
-    FOREIGN KEY image_id REFERENCES Image(id)
-
+    FOREIGN KEY (post_id) REFERENCES Post(id)
 );
 
 CREATE TABLE Profile(
@@ -47,7 +39,7 @@ CREATE TABLE Profile(
     profile_picture_id INT NOT NULL,
     profile_desc VARCHAR(100) NOT NULL,
     
-    FOREIGN KEY profile_picture_id REFERENCES Image(id)
+    FOREIGN KEY (profile_picture_id) REFERENCES Image(id)
 );
 
 CREATE TABLE Follow(
@@ -55,8 +47,8 @@ CREATE TABLE Follow(
     followed_id INT,
 
     CONSTRAINT id PRIMARY KEY (follower_id,followed_id),
-    FOREIGN KEY follower_id REFERENCES Profile(id),
-    FOREIGN KEY followed_id REFERENCES Profile(id),
+    FOREIGN KEY (follower_id) REFERENCES Profile(id),
+    FOREIGN KEY (followed_id) REFERENCES Profile(id)
 );
 
 CREATE TABLE User(
@@ -67,14 +59,15 @@ CREATE TABLE User(
     password CHAR(40) NOT NULL, -- hashed with SHA-1
     profile_id INT NOT NULL,
 
-    FOREIGN KEY profile_id REFERENCES Profile(id)
+    FOREIGN KEY (profile_id) REFERENCES Profile(id)
 );
 
-CREATE TALBE LIKE(
+CREATE TABLE Heart(
     profile_id INT,
     post_id INT,
 
-    CONSTRAINT id PRIMARY KEY (profile_id,post_id),
-    FOREIGN KEY profile_id REFERENCES Profile(id),
-    FOREIGN KEY post_id REFERENCES Post(id)
+    FOREIGN KEY (profile_id) REFERENCES Profile(id),
+    FOREIGN KEY (post_id) REFERENCES Post(id),
+    PRIMARY KEY (profile_id,post_id)
 );
+
