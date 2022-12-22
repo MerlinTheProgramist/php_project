@@ -9,4 +9,3 @@ FROM mysql:8.0
 #COPY ./mysql/init.sql /init.sql
 
 CMD ["mysqld","--init-file=/init.sql"]
-
