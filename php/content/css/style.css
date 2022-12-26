@@ -1,10 +1,21 @@
 :root{
-  --col_r: #EB1D36;
+  --col_r: #b32f23;
   --col_p: #FA9494;
   --col_w: #CFD2CF;
 }
 
-*{font-family: Calibri, sans-serif;}
+@font-face{
+  font-family: 'rediviva';
+  src: url('../res/rediviva.regular.ttf');
+}
+
+*{font-family:rediviva; font-weight: 100;}
+
+body{
+  background-color: var(--col_r);
+  color: var(--col_w);
+  
+}
 
 #main{
   margin: auto;
@@ -16,6 +27,40 @@
   border: solid 3px var(--col_r);
   border-radius: 20px;
 }
+
+#sidenav{
+  height: 100%;
+  width: 8vw;
+  position: fixed;
+  z-index: 1;
+  top:0;
+  left:0;
+  overflow-x:hidden;
+  padding-top: 20px;
+
+  padding: 6px 5px 6px 5px; /* top, right, bottom, left */
+  background-color: var(--col_w);
+}
+
+a.button, a.button>*{
+  float: left;
+  width: 100%;
+  object-fit: contain;
+}
+
+.post{
+  background-color: var(--col_w);
+  border-radius: 30;
+}
+
+.post>small{
+  font-size:small;
+}
+
+.author{
+
+}
+
 
 input[type=text], 
 input[type=email],
