@@ -23,7 +23,7 @@
             <?php unset($_SESSION["mess"]); endif;?>
             
             <form method="POST" action="verify.php">
-                <label>Login: </br><input type="text" name="login"></input></label></br>
+                <label>Email or Login: </br><input type="text" name="login"></input></label></br>
                 <label>Password: </br><input type="password" name="pass"></input></label></br>
                 <input type="submit" name="sub" value="Login"></input></br>
             </form>

@@ -6,7 +6,7 @@
     <meta name="description" content="Docker Test">
     <meta name="author" content="Merlin">
 </head>
-
+<!-- STRONA GŁÓWNA, tak ta której miało nie być-->
 <body>
     <h1>Docker Test</h1>
     <div class=".db-table">
