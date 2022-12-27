@@ -44,10 +44,10 @@ function set_n_head(string $url, array $data)
     die();
 }
 
-function CreateUser($db,string $email, string $name, string $pass):bool
+function CreateUser($db,string $email, string $name, string $pass)
 {
-   return (bool) mysqli_query($db,"INSERT INTO Profile(username) VALUES ('{$name}');
-                      INSERT INTO User(email,username,password,profile_id) VALUES
+    mysqli_query($db, "INSERT INTO Profile(username) VALUES ('{$name}');");
+    mysqli_query($db,"INSERT INTO User(email,username,password,profile_id) VALUES
                       ('{$email}','{$name}','{$pass}',LAST_INSERT_ID());");
 }
 
