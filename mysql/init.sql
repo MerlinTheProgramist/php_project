@@ -31,7 +31,7 @@ CREATE TABLE Post(
     
     author_id INT,
     content VARCHAR(255) NOT NULL,
-    image_id INT,
+    image_id INT NULL,
     creation_date TIMESTAMP NOT NULL default CURRENT_TIMESTAMP,
 
     FOREIGN KEY (author_id) REFERENCES Profile(id),
@@ -42,7 +42,7 @@ CREATE TABLE Comment(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 
     post_id INT,
-    content VARCHAR(255),
+    content VARCHAR(10000),
     creation_date TIMESTAMP NOT NULL default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- update automatic data on create and update 
 
     FOREIGN KEY (post_id) REFERENCES Post(id)
@@ -88,7 +88,14 @@ END $$
 
 DELIMITER ;
 
+GRANT execute ON PROCEDURE app.newUser to 'mysql_user'@'%';
+
 CALL newUser("email","nazwauzytkownika","haslo");
 CALL newUser("Merlin@proton.me","Merlin","haslo");
 CALL newUser("cos@onet.pl","K4mil","haslo");
 CALL newUser("Jakis@cos.pl","Hubercik","haslo");
+
+INSERT Post (author_id,content,image_id) VALUES(1,"Proin aliquet ac leo molliiculus mus.",null);
+INSERT Post (author_id,content,image_id) VALUES(4,"ras non dui ac turpis cons nisi dolor, commodo ac euismod nec, rhoncus vitae lacus. Nam interdum fermentum dui id molestie.",1);
+INSERT Post (author_id,content,image_id) VALUES(2,"Lorem ipsum dolor sit amet est eget libero aliquam, ut volutpat erat semper. Mauris ut lorem at mauris maximus condimentum.",1);
+INSERT Post (author_id,content,image_id) VALUES(2,"Cras massa urna, commodo non mauris vehicula, euis a mauris risus. Fusce pulvinar mattis vestibulum.",null);
