@@ -2,6 +2,7 @@
   --col_r: #b32f23;
   --col_p: #FA9494;
   --col_w: #CFD2CF;
+  --col_post: #E0C9A6;
 }
 
 @font-face{
@@ -42,6 +43,16 @@ body{
   background-color: var(--col_w);
 }
 
+#sidenav>.button{
+  height: 10vh;
+}
+
+#sidenav>.end{
+  bottom: 0;
+  height:10vh;
+
+}
+
 a.button, a.button>*{
   float: left;
   width: 100%;
@@ -49,16 +60,51 @@ a.button, a.button>*{
 }
 
 .post{
-  background-color: var(--col_w);
+  background-color: var(--col_post);
+  color: #101010;
+  border: 0 0 0;
   border-radius: 30;
+
+  padding: 10px;
+  margin-top:30px;
+}
+
+.post>.meta{
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+.post>.meta>*{
+  float: left;
+  text-align: left;
+  margin: 0;
+  vertical-align: middle;
+}
+.meta>.author{
+  font-weight: bold;
+}
+.author>img{
+  width:5%;
+  object-fit: contain;
+  float: left;
+  margin-right: 10px;
+  vertical-align: middle;
 }
 
 .post>small{
-  font-size:small;
+  font-size:x-small;
 }
 
-.author{
+.post>p{
+  text-align: left;
+}
 
+td{
+  padding: 0 30px 0 0;
+}
+
+.actions>input[type=submit]{
+  
 }
 
 
@@ -72,7 +118,7 @@ input[type=password]{
   width: 70%;
 }
 
-input[type=submit]
+.main>input[type=submit]
 {
   background-color: var(--col_r);
   color: var(--col_w);
