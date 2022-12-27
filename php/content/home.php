@@ -1,8 +1,12 @@
 <?php
 session_start();
 
-if (!isset($_SESSION["login"]) || $_SESSION["login"] == "")
-    header("index.html");
+if (isset($_SESSION["user_id"]))
+    header("login.php");
+
+require("util.php");
+
+
 ?>
 
 <!DOCTYPE html>
@@ -25,27 +29,84 @@ if (!isset($_SESSION["login"]) || $_SESSION["login"] == "")
 
     <?php
         $db = mysqli_connect("db", "mysql_user", "mysql_pass", "app",3306);
-        $result = mysqli_query($db, "SELECT prof.username as author, i.image_path as prof, p.content as cont, p.creation_date as cre_time FROM Posts p JOIN Profile prof ON prof.id=p.author_id JOIN Image i ON i.id=p.image_id ORDER BY p.creation_date;");    
+        $result = mysqli_query($db, "SELECT prof.username as author, i.image_path as prof,
+            p.content as cont, p.creation_date as cre_time, p.id as id
+            FROM Post p 
+            LEFT JOIN Profile prof ON prof.id=p.author_id 
+            LEFT JOIN Image i ON i.id=p.image_id ORDER BY p.creation_date;");    
     ?>
 
     <body>
-        <?php include "./sidenav.html" ?>
+        <?php include "./sidenav.html";?>
         
         <div id="main">
             <h1>Główna</h1>
-            <?php while($post=mysqli_fetch_array($result)): ?>
+            <?php while($post=mysqli_fetch_array($result)): 
+                    $url = urlGET('/post.php',array('id'=>$post['id']));
+                    echo $_SESSION["user_id"];
+                    echo $_SESSION["login"];     
+                    echo $_SESSION["profile_pic"];
+            ?>
                 <div class="post">
-
-                    <a class="author">
-                        <img class="prof_pic" src='<?=$data["prof"]?>'></img>
-                        <?=$data["author"]?>
-                    </a>
-                    <small><?=$data["cre_time"]?></small>
+                    <div class="meta">
+                        <a class="author">
+                            <img class="prof_pic" src="<?=('./profile_pics/'.$post['prof'])?>">
+                            <?=$post["author"]?>
+                            ·
+                            <small><?=$post["cre_time"]?></small>
+                        </a>
+                    </div>
                     <p>
-                        <?=$data["cont"]?>
+                        <?=$post["cont"]?>
                     </p>
+                    <hr>
+                    <table class="actions">
+                        <td>
+                            <a href="<?=$url?>">
+                            Comm
+                            </a>
+                        </td>
+                        <td>
+                            <?php
+                                $is_hearting = mysqli_fetch_array(mysqli_query($db, "SELECT count(*)  FROM Heart h WHERE {$_SESSION['user_id']}=h.profile_id AND h.post_id={$post['id']};"))[0];
+
+                                if (isset($_POST['Heart']) && $_POST['Heart']==$post['id']) {
+                                    $h_id = $_POST['Heart'];
+                                    unset($_POST['Heart']);
+
+                                    
+                                    if($is_hearting) // unheart
+                                        mysqli_query($db, "DELETE FROM Heart h WHERE h.profile_id={$_SESSION['user_id']} AND h.post_id={$h_id};");
+                                    else // heart
+                                        mysqli_query($db, "INSERT INTO Heart (profile_id, post_id) VALUES ({$_SESSION['user_id']},{$h_id});");
+                                    $is_hearting = !$is_hearting;
+                                }
+                                
+                                $hearths = mysqli_fetch_array(mysqli_query($db, "SELECT count(1) as num FROM Heart h WHERE h.post_id={$post['id']};"));
+                                
+                            ?>
+
+                            <form method='POST'>
+                                <button onclick="" type="submit" name="Heart" value="<?=$post['id']?>">
+                                    <?= $hearths['num']." ".(($is_hearting)?"+":"")?>
+                                </button>
+                            </form>
+                        </td>
+                        <td>
+                            <button onclick="copyText('<?=$url?>')">
+                            Share <!-- copy link to clickboard -->
+                            </button>
+                        </td>
+                    </table>
+                    
                 </div>
-            <?endwhile;?>
+            <?php endwhile;?>
         </div>
     </body>
+    <script>
+        function copyText(text)
+        {
+            navigator.clipboard.writeText(window.location.hostname+":"+window.location.port+text);
+        }
+    </script>
 </html>
