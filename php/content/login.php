@@ -16,6 +16,7 @@
         <link rel="stylesheet" href="./css/style.css" type=>
     </head>
     <body>
+        <a style="color:yellow">☭<a>
         <div id="main">
             
             <?php if(isset($_SESSION["mess"])):?>

@@ -41,10 +41,12 @@ CREATE TABLE Post(
 CREATE TABLE Comment(
     id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 
-    post_id INT,
+    author_id INT NOT NULL,
+    post_id INT NOT NULL,
     content VARCHAR(10000),
     creation_date TIMESTAMP NOT NULL default CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- update automatic data on create and update 
 
+    FOREIGN KEY (author_id) REFERENCES Profile(id),
     FOREIGN KEY (post_id) REFERENCES Post(id)
 );
 

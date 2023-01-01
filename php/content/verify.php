@@ -17,7 +17,14 @@ $pass = sha1($_POST["pass"]);
 if ($_POST["sub"] == "Login") {
     echo "Loging";
     $db = mysqli_connect("db", "mysql_user", "mysql_pass", "app",3306);
-    $result = mysqli_query($db, "SELECT u.username, i.image_path, u.id FROM User u JOIN Profile p ON u.profile_id=p.id JOIN Image i ON i.id=p.profile_picture_id WHERE u.password='{$pass}' AND (u.username='{$login}' OR u.email='{$login}');");
+    $result = mysqli_query($db, 
+       "SELECT u.username, i.image_path, p.id 
+        FROM User u 
+        JOIN Profile p ON u.profile_id=p.id 
+        JOIN Image i ON i.id=p.profile_picture_id 
+        WHERE u.password='{$pass}' 
+        AND (u.username='{$login}' OR u.email='{$login}');
+    ");
     $data = mysqli_fetch_array($result);
     if(!$data)
         set_n_head("./login.php", array('mess'=>"login or password was incorrect"));
@@ -49,19 +56,18 @@ else if ($_POST["sub"] == "Next") {
         set_n_head("./register.php", array('mess'=>"Login is Occupied!</br> Please insert other Login"));
     
     
-    CreateUser($db, $email, $login, $pass);
-
+    $user_id = CreateUser($db, $email, $login, $pass);
+    
     // get default picture
-    $result = mysqli_query($db, "SELECT u.username, i.image_path, p.id FROM User u 
-                                    LEFT JOIN Profile p ON u.profile_id=p.id 
-                                    LEFT JOIN Image i ON i.id=p.profile_picture_id 
-                                    WHERE u.password='{$pass}' AND u.email='{$email}';");
+    $result = mysqli_query($db, "SELECT p.username as login, i.image_path FROM Profile p
+                                 LEFT JOIN Image i ON i.id=p.profile_picture_id 
+                                 WHERE p.id={$user_id}");
     if (!$result)
         set_n_head("./register.php", array('mess' => $result));
     $data = mysqli_fetch_array($result);
     
     $_SESSION["auth"] = true;
-    $_SESSION["user_id"] = $data["id"];
+    $_SESSION["user_id"] = $user_id;
     $_SESSION["login"] = $data["login"];
     $_SESSION["profile_pic"] = $data["image_path"];
 

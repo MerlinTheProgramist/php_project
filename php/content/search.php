@@ -1,8 +1,8 @@
 <?php
 session_start();
 
-if (isset($_SESSION["user_id"]))
-    header("login.php");
+if (!isset($_SESSION["user_id"]))
+header("Location: login.php");
 
 require("util.php");
 ?>
@@ -40,14 +40,9 @@ require("util.php");
                     <fieldset>
                         <label> Wszystko
                         <input type="radio" name="results"
-                        <?=(isset($results) && $results=="All")?"checked":""?>
+                        <?=(isset($results))?(($results=="All")?"checked":""):"checked"?>
                         value="All"></input></label>
 
-
-                        <label> Najnowsze
-                        <input type="radio" name="results"
-                        <?=(isset($results) && $results=="live")?"checked":""?>
-                        value="live"></input></label>
 
                         <label> Użytkownicy
                         <input type="radio" name="results"
@@ -67,34 +62,44 @@ require("util.php");
                 die();
             $db = mysqli_connect("db", "mysql_user", "mysql_pass", "app", 3306);
             if ($results == "Users" or $results == "All") {
+                
                 $profile_results = mysqli_query($db, "SELECT p.id, p.username, p.profile_desc, i.image_path,
-                                                  (SELECT count(1) FROM Follow f WHERE f.follower_id={$_SESSION['user_id']}) as following
+                                                  f.followed_id as following
                                                   FROM Profile p 
                                                   JOIN Image i ON i.id=p.profile_picture_id
+                                                  LEFT JOIN Follow f ON f.follower_id={$_SESSION['user_id']} AND f.followed_id=p.id
                                                   WHERE p.username LIKE '%{$text}%' 
                                                   OR p.profile_desc LIKE '%{$text}%';");
-                
-                while ($user = mysqli_fetch_array($profile_results)) {
-                    userTemplate($db, $user["id"], $user['image_path'], $user["username"], $user["profile_desc"], $user["following"]);
+
+                if (mysqli_num_rows($profile_results) > 0) {
+                    echo "<h3>Użytkownicy</h3>";
+                    while ($user = mysqli_fetch_array($profile_results)) {
+                        userTemplate($db, $user["id"], $user['image_path'], $user["username"], $user["profile_desc"], isset($user["following"]));
+                    }
                 }
             }
 
             if ($results == "Posts" or $results == "All") {
+                
                 $post_results = mysqli_query($db, "SELECT p.id, p.content, p.creation_date,  prof.username, p.creation_date, i.image_path
                                                 FROM Post p 
                                                 JOIN Profile prof ON p.author_id=prof.id
                                                 JOIN Image i ON i.id=prof.profile_picture_id
-                                                WHERE p.content LIKE '%{$text}%';");
+                                                WHERE p.content LIKE '%{$text}%' 
+                                                OR prof.username LIKE '%{$text}%'
+                                                ORDER BY p.creation_date DESC;");
 
+                if (mysqli_num_rows($post_results) > 0) {
+                    echo "</br><h3>Posty</h3>";
+                    while ($post = mysqli_fetch_array($post_results)) {
+                        postTemplate($db, $post['id'], $post['image_path'], $post["username"], $post["creation_date"], $post["content"]);
+                    }
+                }
+            }
 
-            while ($post = mysqli_fetch_array($post_results)) {
-                postTemplate($db, $post['id'], $post['image_path'], $post["username"], $post["creation_date"], $post["content"]);
-            }
-            }
+            
             
             ?>
-
-            
         </div>
     </body>
 </html>
