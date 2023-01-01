@@ -7,25 +7,15 @@ header("Location: login.php");
 require("util.php");
 
 
-$id = $_GET['id'];
-
-$db = mysqli_connect("db", "mysql_user", "mysql_pass", "app",3306);
-$result = mysqli_query($db, 
-    "SELECT prof.username as author,
-    i.image_path as prof,
-    p.content as cont,
-    p.creation_date as cre_time 
-    FROM Post p
-    LEFT JOIN Profile prof ON prof.id=p.author_id
-    LEFT JOIN Image i ON prof.profile_picture_id=i.id
-    WHERE p.id={$id}
-    LIMIT 1 
-");
-$post = mysqli_fetch_array($result);
-if (!$post) {
+if (!isset($_GET['id']))
     header("Location: home.php");
-    die();
+
+if ($_GET['id'] == $_SESSION['user_id']) {
+    header("Location: MyProfile.php");
 }
+
+
+
 ?>
 
 <!DOCTYPE html>
@@ -50,8 +40,10 @@ if (!$post) {
         <div id="main">
         <?php include "./sidenav.html" ?>
         
-        
-        
+        <div>
+            <img>
+        </div>
+
         <script>
             if ( window.history.replaceState ) {
             window.history.replaceState( null, null, window.location.href );
