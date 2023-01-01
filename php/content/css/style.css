@@ -120,8 +120,8 @@ a.button, a.button>*{
 .meta>.author{
   font-weight: bold;
 }
-.author>img, 
-.profile>img
+.author img, 
+.profile img
 {
   width:5%;
   object-fit: contain;

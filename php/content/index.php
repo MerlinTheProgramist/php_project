@@ -8,7 +8,7 @@
 </head>
 <!-- STRONA GŁÓWNA, tak ta której miało nie być-->
 <body>
-    <h1>Docker Test</h1>
+    <h1>THIS IS A TEST, nothing to see here</h1>
     <div class=".db-table">
         <table>
             <tr>

@@ -81,7 +81,7 @@ require("util.php");
 
             if ($results == "Posts" or $results == "All") {
                 
-                $post_results = mysqli_query($db, "SELECT p.id, p.content, p.creation_date,  prof.username, p.creation_date, i.image_path
+                $post_results = mysqli_query($db, "SELECT p.id, p.content, p.creation_date,  prof.username, p.creation_date, i.image_path, prof.id as prof_id
                                                 FROM Post p 
                                                 JOIN Profile prof ON p.author_id=prof.id
                                                 JOIN Image i ON i.id=prof.profile_picture_id
@@ -92,7 +92,7 @@ require("util.php");
                 if (mysqli_num_rows($post_results) > 0) {
                     echo "</br><h3>Posty</h3>";
                     while ($post = mysqli_fetch_array($post_results)) {
-                        postTemplate($db, $post['id'], $post['image_path'], $post["username"], $post["creation_date"], $post["content"]);
+                        postTemplate($db, $post['id'], $post['prof_id'], $post['image_path'], $post["username"], $post["creation_date"], $post["content"]);
                     }
                 }
             }

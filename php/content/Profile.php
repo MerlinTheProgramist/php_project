@@ -6,24 +6,26 @@ header("Location: login.php");
 
 require("util.php");
 
+
+$id = $_GET['id'];
+
 $db = mysqli_connect("db", "mysql_user", "mysql_pass", "app",3306);
-$results = mysqli_query($db, 
-    "SELECT 
-    p.id, 
-    p.content, 
-    p.creation_date,
-    i.image_path as image_path,
-    prof.username,
-    prof_img.image_path as prof_image,
-    prof.id as prof_id
-    FROM Post p 
-    JOIN Profile prof ON prof.id=p.author_id
-    LEFT JOIN Image i ON p.image_id=i.id
-    JOIN Image prof_img ON prof.profile_picture_id=prof_img.id
-    JOIN Follow f ON f.followed_id = prof.id
-    WHERE f.follower_id={$_SESSION['user_id']}
-    ORDER BY p.creation_date;
-    ;");
+$result = mysqli_query($db, 
+    "SELECT prof.username as author,
+    i.image_path as prof,
+    p.content as cont,
+    p.creation_date as cre_time 
+    FROM Post p
+    LEFT JOIN Profile prof ON prof.id=p.author_id
+    LEFT JOIN Image i ON prof.profile_picture_id=i.id
+    WHERE p.id={$id}
+    LIMIT 1 
+");
+$post = mysqli_fetch_array($result);
+if (!$post) {
+    header("Location: home.php");
+    die();
+}
 ?>
 
 <!DOCTYPE html>
@@ -46,13 +48,15 @@ $results = mysqli_query($db,
 
     <body>
         <div id="main">
-        <?php include "./sidenav.html";?>
-        <h1>Najnowsze posty</h1>
-        <?php
-        while ($post = mysqli_fetch_array($results)) {
-            postTemplate($db, $post['id'], $post['prof_id'], $post['prof_image'], $post["username"], $post["creation_date"], $post["content"]);
-        }
-        ?>
+        <?php include "./sidenav.html" ?>
+        
+        
+        
+        <script>
+            if ( window.history.replaceState ) {
+            window.history.replaceState( null, null, window.location.href );
+            }
+        </script>
         </div>
     </body>
 </html>

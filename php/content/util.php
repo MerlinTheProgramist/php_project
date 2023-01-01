@@ -55,10 +55,11 @@ function userTemplate($db, int $id, string $image_path, string $username, string
 
     ?>
     <div class="profile">
-        <img class="avatar" src="<?=('./profile_pics/'.$image_path)?>">
         <div class="meta">
-            
-            <b><?=$username?></b>
+            <a href=<?=urlGET('/Profile.php',array('id'=>$id))?>> 
+                <img class="avatar" src="<?=('./profile_pics/'.$image_path)?>">
+                <h3><?=$username?> </h3>
+            </a>
             <form method="POST">
                 <button type="submit" class="follow" name="follow"
                     value="<?=$id?>"
@@ -72,16 +73,18 @@ function userTemplate($db, int $id, string $image_path, string $username, string
     <?php
 }
 
-function postTemplate($db, int $id, string $prof_image_path, string $author,string $creation_time, string $text){
+function postTemplate($db, int $id, int $profile_id, string $prof_image_path, string $author,string $creation_time, string $text){
     ?>
     <div class="post">
         <div class="meta">
-            <a class="author">
-                <img class="avatar" src="<?=('./profile_pics/'.$prof_image_path)?>">
-                <?=$author?>
+            <div class="author" >
+                <a href="<?=urlGET('/Profile.php',array('id'=>$profile_id))?>">
+                    <img class="avatar" src="<?=('./profile_pics/'.$prof_image_path)?>">
+                    <?=$author?>
+                </a>
                 ·
                 <small><?=$creation_time?></small>
-            </a> 
+            </div> 
             
         </div>
         <p>
