@@ -12,12 +12,14 @@ $id = $_GET['id'];
 $db = mysqli_connect("db", "mysql_user", "mysql_pass", "app",3306);
 $result = mysqli_query($db, 
     "SELECT prof.username as author,
-    i.image_path as prof,
+    prof_img.image_path as prof,
+    image.image_path as image,
     p.content as cont,
     p.creation_date as cre_time 
     FROM Post p
-    LEFT JOIN Profile prof ON prof.id=p.author_id
-    LEFT JOIN Image i ON prof.profile_picture_id=i.id
+    INNER JOIN Profile prof ON prof.id=p.author_id
+    INNER JOIN Image prof_img ON prof.profile_picture_id=prof_img.id
+    LEFT JOIN Image image ON p.image_id=image.id
     WHERE p.id={$id}
     LIMIT 1 
 ");
@@ -60,9 +62,13 @@ if (!$post) {
                 </a> 
                 
             </div>
+            </hr>
             <p>
                 <?=nl2br($post["cont"])?>
             </p>
+            <?php if(!empty($post['image'])): ?>
+                <img src="<?=UPLOAD_DIR.$post['image']?>"></img>
+            <?php endif; ?>
         </div>
 
         
