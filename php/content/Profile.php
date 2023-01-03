@@ -22,12 +22,9 @@ $profile_results = mysqli_query($db, "SELECT p.username, p.profile_desc, i.image
                                 LEFT JOIN Follow f ON f.follower_id={$_SESSION['user_id']} AND f.followed_id=p.id
                                 WHERE p.id = {$_GET['id']};");   
 
-if (mysqli_num_rows($profile_results) > 0) {
-    echo "</br><h3>Posty</h3>";
-    while ($profile = mysqli_fetch_array($profile_results)) {
-        postTemplate($db, $profile['prof_id'], $profile["username"]);
-    }
-}
+$row = mysqli_fetch_array($profile_results);
+
+
 
 
 ?>
@@ -48,6 +45,11 @@ if (mysqli_num_rows($profile_results) > 0) {
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="./css/style.css">
+        <style type="text/css">
+            .nazwa{
+                font-size: 100px;
+            }
+        </style>
     </head>
 
     <body>
@@ -57,12 +59,9 @@ if (mysqli_num_rows($profile_results) > 0) {
         <div>
             <img>
         </div>
-
-        <script>
-            if ( window.history.replaceState ) {
-            window.history.replaceState( null, null, window.location.href );
-            }
-        </script>
+            <div id="nazwa">
+                <?= $row['username'] ?>
+            </div> 
         </div>
     </body>
 </html>
