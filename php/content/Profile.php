@@ -25,6 +25,14 @@ $profile_results = mysqli_query($db, "SELECT p.username, p.profile_desc, i.image
 $row = mysqli_fetch_array($profile_results);
 
 
+$result = mysqli_query($db, "SELECT prof.username as author, i.image_path as prof_pic,
+            p.content as cont, p.creation_date as cre_time, p.id as id, prof.id as prof_id
+            FROM Post p 
+            JOIN Profile prof ON prof.id=p.author_id 
+            JOIN Image i ON i.id=prof.profile_picture_id 
+            WHERE prof.id = {$_GET['id']}
+            ORDER BY p.creation_date DESC;");  
+
 
 
 ?>
@@ -59,7 +67,7 @@ $row = mysqli_fetch_array($profile_results);
     <body>
         <div id="main">
         <?php include "./sidenav.html" ?>
-        
+
         <div>
             <img>
         </div>
@@ -69,6 +77,12 @@ $row = mysqli_fetch_array($profile_results);
             <div id="napis">
                 <h3>Posts</h3>
             </div>
+
+            <?php while($post=mysqli_fetch_array($result)){
+                $url = urlGET('/post.php',array('id'=>$post['id']));
+                postTemplate($db, $post['id'], $post['prof_id'], $post['prof_pic'], $post['author'], $post['cre_time'],$post['cont']);    
+            }
+        ?>
         </div>
     </body>
 </html>
