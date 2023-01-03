@@ -6,6 +6,8 @@ if (!isset($_SESSION["user_id"]))
 header("Location: login.php");
 
 require("util.php");
+
+
 ?>
 
 <!DOCTYPE html>
@@ -13,8 +15,6 @@ require("util.php");
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]>      <html class="no-js"> <!--<![endif]-->
-
-
 
 <html>
     <head>
@@ -34,8 +34,9 @@ require("util.php");
         <div id="main">
         <?php include "./sidenav.html" ?>
         
-        <form method="POST" id="newPost">
+        <form method="POST" id="newPost" enctype="multipart/form-data">
             <textarea type='text' name="cont"></textarea>
+            <input type="file" name="upload_image"></input>
             <button type='submit' name="sub">Zapostuj</button>
         </form>
         <?php
@@ -43,7 +44,26 @@ require("util.php");
             $text = $_POST['cont'];
             if (!empty($text)) {
                 $db = mysqli_connect("db", "mysql_user", "mysql_pass", "app", 3306);
-                $result = mysqli_query($db, "INSERT INTO Post(author_id,content) VALUES ({$_SESSION['user_id']},'{$text}');");
+
+                $image_id = 0;
+                if ($_FILES['upload_image']['error'] <= UPLOAD_ERR_OK && getimagesize($_FILES["upload_image"]["tmp_name"]) !== false) {
+
+                    $path_parts = pathinfo($_FILES["upload_image"]["name"]);
+                    $extension = $path_parts['extension'];
+
+                    $source = $_FILES["upload_image"]["tmp_name"];
+                    $name = uniqid() . "-" . time() .".". $extension;
+                    $destination = UPLOAD_DIR . $name;
+
+                    move_uploaded_file($source, $destination);
+                    mysqli_query($db, "INSERT INTO Image (image_path) VALUES ('{$name}');");
+                    $image_id = mysqli_insert_id($db);
+                }
+
+                $image_id = ($image_id == 0) ? 'null' : $image_id;
+                mysqli_query($db, "INSERT INTO Post
+                                   (author_id, content, image_id) 
+                                   VALUES ({$_SESSION['user_id']},'{$text}',{$image_id});");
                 $post_id = mysqli_insert_id($db);
                 GET_n_head('./post.php', array('id' => $post_id));
             }
@@ -54,7 +74,7 @@ require("util.php");
     </body>
     <script>
         if ( window.history.replaceState ) {
-        window.history.replaceState( null, null, window.location.href );
+            window.history.replaceState( null, null, window.location.href );
         }
     </script>
 </html>

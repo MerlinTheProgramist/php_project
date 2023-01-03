@@ -1,4 +1,7 @@
 <?php
+// CONSTANTS
+const UPLOAD_DIR = "images/";
+
 function urlGET($url,$params=array()) {
     if(!$params) return $url;
     $link = $url;
