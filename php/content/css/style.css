@@ -129,6 +129,12 @@ a.button, a.button>*{
   margin-right: 10px;
   vertical-align: middle;
 }
+
+.post>.content{
+  padding:20px;
+  text-align: left;
+}
+
 .post>small{
   font-size:x-small;
 }

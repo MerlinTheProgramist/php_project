@@ -15,23 +15,31 @@ if ($_GET['id'] == $_SESSION['user_id']) {
 }
 
 $db = mysqli_connect("db", "mysql_user", "mysql_pass", "app",3306);
-$profile_results = mysqli_query($db, "SELECT p.username, p.profile_desc, i.image_path,
-                                f.followed_id as following
-                                FROM Profile p 
-                                JOIN Image i ON i.id=p.profile_picture_id
-                                LEFT JOIN Follow f ON f.follower_id={$_SESSION['user_id']} AND f.followed_id=p.id
-                                WHERE p.id = {$_GET['id']};");   
+$profile_results = mysqli_query($db, "SELECT
+                                      p.username, 
+                                      p.profile_desc, 
+                                      i.image_path as prof_pic,
+                                      f.followed_id as following
+                                      FROM Profile p 
+                                      INNER JOIN Image i ON i.id=p.profile_picture_id
+                                      LEFT JOIN Follow f ON f.follower_id={$_SESSION['user_id']} AND f.followed_id=p.id
+                                      WHERE p.id = {$_GET['id']};");   
 
 $row = mysqli_fetch_array($profile_results);
 
 
-$result = mysqli_query($db, "SELECT prof.username as author, i.image_path as prof_pic,
-            p.content as cont, p.creation_date as cre_time, p.id as id, prof.id as prof_id
-            FROM Post p 
-            JOIN Profile prof ON prof.id=p.author_id 
-            JOIN Image i ON i.id=prof.profile_picture_id 
-            WHERE prof.id = {$_GET['id']}
-            ORDER BY p.creation_date DESC;");  
+$result = mysqli_query($db, "SELECT 
+                             prof.username as author, 
+                             prof_i.image_path as prof_pic,
+                             p.content as cont, 
+                             p.creation_date as cre_time, 
+                             p.id as id, 
+                             prof.id as prof_id
+                             FROM Post p 
+                             INNER JOIN Profile prof ON prof.id=p.author_id 
+                             INNER JOIN Image prof_i ON prof_i.id=prof.profile_picture_id 
+                             WHERE prof.id = {$_GET['id']}
+                             ORDER BY p.creation_date DESC;");  
 
 
 
@@ -61,6 +69,9 @@ $result = mysqli_query($db, "SELECT prof.username as author, i.image_path as pro
             #napis{
                 width: 400px;
             }
+            #icon{
+                width:30%
+            }
         </style>
     </head>
 
@@ -68,19 +79,16 @@ $result = mysqli_query($db, "SELECT prof.username as author, i.image_path as pro
         <div id="main">
         <?php include "./sidenav.html" ?>
 
-        <div>
-            <img>
-        </div>
-            <div id="nazwa">
-                <?= $row['username'] ?>
-            </div> 
+            <img class='avatar' id="icon" src="<?=AVATAR_DIR.$row['prof_pic']?>"></img>
+            <h1><?=$row['username']?></h1> 
+            <h3><?=$row['profile_desc']?></h3>
             <div id="napis">
                 <h3>Posts</h3>
             </div>
 
             <?php while($post=mysqli_fetch_array($result)){
                 $url = urlGET('/post.php',array('id'=>$post['id']));
-                postTemplate($db, $post['id'], $post['prof_id'], $post['prof_pic'], $post['author'], $post['cre_time'],$post['cont']);    
+                postTemplate($db, $post['id'], $post['prof_id'], $post['pic'], $post['prof_pic'], $post['author'], $post['cre_time'],$post['cont']);    
             }
         ?>
         </div>

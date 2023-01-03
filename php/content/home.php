@@ -27,12 +27,18 @@ require("util.php");
 
     <?php
         $db = mysqli_connect("db", "mysql_user", "mysql_pass", "app",3306);
-        $result = mysqli_query($db, "SELECT prof.username as author, i.image_path as prof_pic,
-            p.content as cont, p.creation_date as cre_time, p.id as id, prof.id as prof_id
-            FROM Post p 
-            JOIN Profile prof ON prof.id=p.author_id 
-            JOIN Image i ON i.id=prof.profile_picture_id 
-            ORDER BY p.creation_date DESC;");    
+        $result = mysqli_query($db, "SELECT prof.username as author, 
+                                     prof_pic.image_path as prof_pic,
+                                     p.content as cont, 
+                                     p.creation_date as cre_time, 
+                                     p.id as id, 
+                                     prof.id as prof_id,
+                                     image.image_path as image_path
+                                     FROM Post p 
+                                     INNER JOIN Profile prof ON prof.id=p.author_id 
+                                     INNER JOIN Image prof_pic ON prof_pic.id = prof.profile_picture_id 
+                                     LEFT JOIN Image image ON image.id=p.image_id
+                                     ORDER BY p.creation_date DESC;");    
     ?>
 
     <body>
@@ -42,7 +48,7 @@ require("util.php");
             <h1>Główna</h1>
             <?php while($post=mysqli_fetch_array($result)){
                 $url = urlGET('/post.php',array('id'=>$post['id']));
-                postTemplate($db, $post['id'], $post['prof_id'], $post['prof_pic'], $post['author'], $post['cre_time'],$post['cont']);    
+                postTemplate($db, $post['id'],$post['prof_id'], $post['image_path'], $post['prof_pic'], $post['author'], $post['cre_time'],$post['cont']);    
             }
         ?>
         </div>

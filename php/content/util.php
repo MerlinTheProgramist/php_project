@@ -1,6 +1,7 @@
 <?php
 // CONSTANTS
 const UPLOAD_DIR = "images/";
+const AVATAR_DIR = "profile_pics/";
 
 function urlGET($url,$params=array()) {
     if(!$params) return $url;
@@ -76,7 +77,7 @@ function userTemplate($db, int $id, string $image_path, string $username, string
     <?php
 }
 
-function postTemplate($db, int $id, int $profile_id, string $prof_image_path, string $author,string $creation_time, string $text){
+function postTemplate($db, int $id, int $profile_id, ?string $image_path, string $prof_image_path, string $author,string $creation_time, string $text){
     ?>
     <div class="post">
         <div class="meta">
@@ -90,9 +91,12 @@ function postTemplate($db, int $id, int $profile_id, string $prof_image_path, st
             </div> 
             
         </div>
-        <p>
+        <div class="content">
             <?=nl2br($text)?>
-        </p>
+        </div>
+        <?php if(!empty($image_path)): ?>
+            <img src="<?=UPLOAD_DIR.$image_path?>"></img>
+        <?php endif; ?>
         <hr>
         <?php
         $url = urlGET('/post.php',array('id'=>$id));
