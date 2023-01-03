@@ -14,6 +14,20 @@ if ($_GET['id'] == $_SESSION['user_id']) {
     header("Location: MyProfile.php");
 }
 
+$db = mysqli_connect("db", "mysql_user", "mysql_pass", "app",3306);
+$profile_results = mysqli_query($db, "SELECT p.username, p.profile_desc, i.image_path,
+                                f.followed_id as following
+                                FROM Profile p 
+                                JOIN Image i ON i.id=p.profile_picture_id
+                                LEFT JOIN Follow f ON f.follower_id={$_SESSION['user_id']} AND f.followed_id=p.id
+                                WHERE p.id = {$_GET['id']};");   
+
+if (mysqli_num_rows($profile_results) > 0) {
+    echo "</br><h3>Posty</h3>";
+    while ($profile = mysqli_fetch_array($profile_results)) {
+        postTemplate($db, $profile['prof_id'], $profile["username"]);
+    }
+}
 
 
 ?>
