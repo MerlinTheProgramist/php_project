@@ -45,9 +45,13 @@ $row = mysqli_fetch_array($profile_results);
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="./css/style.css">
-        <style type="text/css">
-            .nazwa{
+        <style>
+            #nazwa{
                 font-size: 100px;
+                height: 200px;
+            }
+            #napis{
+                width: 400px;
             }
         </style>
     </head>
@@ -62,6 +66,9 @@ $row = mysqli_fetch_array($profile_results);
             <div id="nazwa">
                 <?= $row['username'] ?>
             </div> 
+            <div id="napis">
+                <h3>Posts</h3>
+            </div>
         </div>
     </body>
 </html>
