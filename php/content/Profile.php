@@ -62,15 +62,16 @@ $result = mysqli_query($db, "SELECT
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="./css/style.css">
         <style>
-            #nazwa{
+            #name{
                 font-size: 100px;
                 height: 200px;
             }
             #napis{
                 width: 400px;
             }
-            #icon{
-                width:30%
+            #opis{
+                font-size: 50px;
+                height: 80px;
             }
         </style>
     </head>
@@ -79,11 +80,18 @@ $result = mysqli_query($db, "SELECT
         <div id="main">
         <?php include "./sidenav.html" ?>
 
+        <div>
+            <img>
+        </div>
             <img class='avatar' id="icon" src="<?=AVATAR_DIR.$row['prof_pic']?>"></img>
             <h1><?=$row['username']?></h1> 
-            <h3><?=$row['profile_desc']?></h3>
+            <div id="opis">
+                <?= $row['profile_desc'] ?>
+            </div>
+            
+
             <div id="napis">
-                <h3>Posts</h3>
+                <h2>Posts</h2>
             </div>
 
             <?php while($post=mysqli_fetch_array($result)){
