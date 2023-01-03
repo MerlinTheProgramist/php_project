@@ -54,12 +54,16 @@ $result = mysqli_query($db, "SELECT prof.username as author, i.image_path as pro
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="./css/style.css">
         <style>
-            #nazwa{
+            #name{
                 font-size: 100px;
                 height: 200px;
             }
             #napis{
                 width: 400px;
+            }
+            #opis{
+                font-size: 50px;
+                height: 80px;
             }
         </style>
     </head>
@@ -71,11 +75,14 @@ $result = mysqli_query($db, "SELECT prof.username as author, i.image_path as pro
         <div>
             <img>
         </div>
-            <div id="nazwa">
-                <?= $row['username'] ?>
+            <div id="name">
+                <?= $row['username']?>
             </div> 
+                <div id="opis">
+                    <?= $row['profile_desc'] ?>
+                </div>
             <div id="napis">
-                <h3>Posts</h3>
+                <h2>Posts</h2>
             </div>
 
             <?php while($post=mysqli_fetch_array($result)){
