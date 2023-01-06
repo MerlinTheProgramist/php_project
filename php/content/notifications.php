@@ -12,17 +12,17 @@ $results = mysqli_query($db,
     p.id, 
     p.content, 
     p.creation_date,
-    i.image_path as image_path,
+    i.image_path as image,
     prof.username,
     prof_img.image_path as prof_image,
     prof.id as prof_id
     FROM Post p 
-    JOIN Profile prof ON prof.id=p.author_id
+    INNER JOIN Profile prof ON prof.id=p.author_id
+    INNER JOIN Image prof_img ON prof.profile_picture_id=prof_img.id
+    INNER JOIN Follow f ON f.followed_id = prof.id
     LEFT JOIN Image i ON p.image_id=i.id
-    JOIN Image prof_img ON prof.profile_picture_id=prof_img.id
-    JOIN Follow f ON f.followed_id = prof.id
     WHERE f.follower_id={$_SESSION['user_id']}
-    ORDER BY p.creation_date;
+    ORDER BY p.creation_date DESC;
     ;");
 ?>
 
@@ -47,10 +47,10 @@ $results = mysqli_query($db,
     <body>
         <div id="main">
         <?php include "./sidenav.html";?>
-        <h1>Najnowsze posty</h1>
+        <h1>Powiadomienia</h1>
         <?php
         while ($post = mysqli_fetch_array($results)) {
-            postTemplate($db, $post['id'], $post['prof_id'], $post['prof_image'], $post["username"], $post["creation_date"], $post["content"]);
+            postTemplate($db, $post['id'], $post['prof_id'], $post['image'], $post['prof_image'], $post["username"], $post["creation_date"], $post["content"]);
         }
         ?>
         </div>
