@@ -40,7 +40,7 @@ require("util.php");
                     <fieldset>
                         <label> Wszystko
                         <input type="radio" name="results"
-                        <?=(isset($results))?(($results=="All")?"checked":""):"checked"?>
+                        <?=(!isset($results) || $results=="All")?"checked":""?>
                         value="All"></input></label>
 
 
@@ -81,18 +81,27 @@ require("util.php");
 
             if ($results == "Posts" or $results == "All") {
                 
-                $post_results = mysqli_query($db, "SELECT p.id, p.content, p.creation_date,  prof.username, p.creation_date, i.image_path, prof.id as prof_id
-                                                FROM Post p 
-                                                JOIN Profile prof ON p.author_id=prof.id
-                                                JOIN Image i ON i.id=prof.profile_picture_id
-                                                WHERE p.content LIKE '%{$text}%' 
-                                                OR prof.username LIKE '%{$text}%'
-                                                ORDER BY p.creation_date DESC;");
+                $post_results = mysqli_query($db, "SELECT 
+                                                   p.id, 
+                                                   p.content, 
+                                                   p.creation_date,  
+                                                   prof.username, 
+                                                   p.creation_date, 
+                                                   prof_pic.image_path as prof_pic, 
+                                                   image.image_path as pic,
+                                                   prof.id as prof_id
+                                                   FROM Post p 
+                                                   INNER JOIN Profile prof ON p.author_id=prof.id
+                                                   INNER JOIN Image prof_pic ON prof_pic.id=prof.profile_picture_id
+                                                   LEFT JOIN Image image ON image.id = p.image_id
+                                                   WHERE p.content LIKE '%{$text}%' 
+                                                   OR prof.username LIKE '%{$text}%'
+                                                   ORDER BY p.creation_date DESC;");
 
                 if (mysqli_num_rows($post_results) > 0) {
                     echo "</br><h3>Posty</h3>";
                     while ($post = mysqli_fetch_array($post_results)) {
-                        postTemplate($db, $post['id'], $post['prof_id'], $post['image_path'], $post["username"], $post["creation_date"], $post["content"]);
+                        postTemplate($db, $post['id'], $post['prof_id'], $post['pic'], $post['prof_pic'], $post["username"], $post["creation_date"], $post["content"]);
                     }
                 }
             }
