@@ -64,14 +64,18 @@ $result = mysqli_query($db, "SELECT
         <style>
             #name{
                 font-size: 100px;
-                height: 200px;
+                height: 100px;
             }
-            #napis{
+            h2{
                 width: 400px;
             }
             #opis{
                 font-size: 50px;
                 height: 80px;
+            }
+            img{
+                height: 150px;
+                text-align: top;
             }
         </style>
     </head>
@@ -89,10 +93,7 @@ $result = mysqli_query($db, "SELECT
                 <?= $row['profile_desc'] ?>
             </div>
             
-
-            <div id="napis">
                 <h2>Posts</h2>
-            </div>
 
             <?php while($post=mysqli_fetch_array($result)){
                 $url = urlGET('/post.php',array('id'=>$post['id']));
