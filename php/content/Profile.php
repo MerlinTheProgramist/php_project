@@ -6,13 +6,15 @@ header("Location: login.php");
 
 require("util.php");
 
+if ($_GET['id'] == $_SESSION['user_id']){
+    header("Location: myProfile.php");
+}
 
 if (!isset($_GET['id']))
     header("Location: home.php");
 
-if ($_GET['id'] == $_SESSION['user_id']) {
-    header("Location: MyProfile.php");
-}
+
+
 
 $db = mysqli_connect("db", "mysql_user", "mysql_pass", "app",3306);
 $profile_results = mysqli_query($db, "SELECT
@@ -92,7 +94,7 @@ $result = mysqli_query($db, "SELECT
             <div id="opis">
                 <?= $row['profile_desc'] ?>
             </div>
-            
+        
                 <h2>Posts</h2>
 
             <?php while($post=mysqli_fetch_array($result)){
@@ -100,6 +102,7 @@ $result = mysqli_query($db, "SELECT
                 postTemplate($db, $post['id'], $post['prof_id'], $post['pic'], $post['prof_pic'], $post['author'], $post['cre_time'],$post['cont']);    
             }
         ?>
+
         </div>
     </body>
 </html>
