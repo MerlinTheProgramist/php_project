@@ -2,19 +2,13 @@
 session_start();
 
 if (!isset($_SESSION["user_id"]))
-header("Location: login.php");
-
-require("util.php");
-
-if ($_GET['id'] == $_SESSION['user_id']){
-    header("Location: myProfile.php");
-}
-
+    header("Location: login.php");
 if (!isset($_GET['id']))
     header("Location: home.php");
 
+require("util.php");
 
-
+$id = $_GET['id'];
 
 $db = mysqli_connect("db", "mysql_user", "mysql_pass", "app",3306);
 $profile_results = mysqli_query($db, "SELECT
@@ -25,22 +19,21 @@ $profile_results = mysqli_query($db, "SELECT
                                       FROM Profile p 
                                       INNER JOIN Image i ON i.id=p.profile_picture_id
                                       LEFT JOIN Follow f ON f.follower_id={$_SESSION['user_id']} AND f.followed_id=p.id
-                                      WHERE p.id = {$_GET['id']};");   
+                                      WHERE p.id = {$id};");   
 
 $row = mysqli_fetch_array($profile_results);
 
 
 $result = mysqli_query($db, "SELECT 
-                             prof.username as author, 
-                             prof_i.image_path as prof_pic,
                              p.content as cont, 
                              p.creation_date as cre_time, 
                              p.id as id, 
-                             prof.id as prof_id
+                             prof.id as prof_id,
+                             image.image_path as image_path
                              FROM Post p 
                              INNER JOIN Profile prof ON prof.id=p.author_id 
-                             INNER JOIN Image prof_i ON prof_i.id=prof.profile_picture_id 
-                             WHERE prof.id = {$_GET['id']}
+                             LEFT JOIN Image image ON image.id=p.image_id
+                             WHERE prof.id = {$id}
                              ORDER BY p.creation_date DESC;");  
 
 
@@ -68,41 +61,35 @@ $result = mysqli_query($db, "SELECT
                 font-size: 100px;
                 height: 100px;
             }
-            h2{
-                width: 400px;
-            }
+
             #opis{
-                font-size: 50px;
+                font-size: large;
                 height: 80px;
+                
             }
-            img{
-                height: 150px;
-                text-align: top;
-            }
+            
         </style>
     </head>
 
     <body>
         <div id="main">
-        <?php include "./sidenav.html" ?>
-
-        <div>
-            <img>
-        </div>
-            <img class='avatar' id="icon" src="<?=AVATAR_DIR.$row['prof_pic']?>"></img>
+        <?php include "./sidenav.php" ?>
+            <img id='big_avatar' id="icon" src="<?=AVATAR_DIR.$row['prof_pic']?>"></img>
             <h1><?=$row['username']?></h1> 
             <div id="opis">
                 <?= $row['profile_desc'] ?>
+                <?php if($_SESSION['user_id']==$id):?>
+                    <a style='float:right; font-size: medium;' href="<?= urlGET('myProfile.php',array('id'=>$id)) ?>">Edytuj profil</a>
+                <?php endif; ?>
             </div>
-        
-                <h2>Posts</h2>
+            
+                <h2>Posty</h2>
 
             <?php while($post=mysqli_fetch_array($result)){
                 $url = urlGET('/post.php',array('id'=>$post['id']));
-                postTemplate($db, $post['id'], $post['prof_id'], $post['pic'], $post['prof_pic'], $post['author'], $post['cre_time'],$post['cont']);    
+                postTemplate($db, $post['id'], $id, $post['pic'], $row['prof_pic'], $row['username'], $post['cre_time'],$post['cont']);    
             }
-        ?>
-
+            ?>
         </div>
     </body>
 </html>
