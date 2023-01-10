@@ -25,7 +25,7 @@ require("util.php");
         <link rel="stylesheet" href="./css/style.css">
     </head>
     <body>
-        <?php include "./sidenav.html";?>
+        <?php include "./sidenav.php";?>
         <div id="main">
             <?php 
             $results = $_GET['results']; 

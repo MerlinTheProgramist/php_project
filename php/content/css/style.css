@@ -3,6 +3,7 @@
   --col_p: #FA9494;
   --col_w: #CFD2CF;
   --col_post: #E0C9A6;
+  --nav_size: 100px;
 }
 
 @font-face{
@@ -27,7 +28,10 @@ textarea{
 body{
   background-color: var(--col_r);
   color: var(--col_w);
-  
+}
+
+img{
+  object-fit: contain;
 }
 
 textarea{
@@ -46,7 +50,7 @@ textarea:focus{
 
 #main{
   margin: auto;
-  width: 50%;
+  width: 35%;
   padding: 10px 10px 10px;
   
   text-align: center;
@@ -57,7 +61,7 @@ textarea:focus{
 
 #sidenav{
   height: 100%;
-  width: 8vw;
+  width: var(--nav_size);
   position: fixed;
   z-index: 1;
   top:0;
@@ -70,7 +74,7 @@ textarea:focus{
 }
 
 #sidenav>.button{
-  height: 10vh;
+  height: var(--nav_size);
 }
 
 #sidenav>.button #newPost{
@@ -169,13 +173,18 @@ td{
   content: "❤";
 }
 
-#comments{
-
-}
 
 .comment{
   background-color: var(--col_post);
   color:#101010;
+
+  padding: 10px;
+  margin-top: 30px;
+  margin-bottom: 40px;
+}
+
+.comment>p{
+  float: left;
 }
 
 /* NEW POST */
@@ -195,11 +204,21 @@ td{
   border-radius: 50%;
   left:0;
 }
+#big_avatar{
+  border-radius: 50%;
+  width:30%;
+}
+
 .profile{
   background-color: var(--col_p);
 }
-.profile .meta{
-
+#edit_profile > textarea{
+  resize: none;
+  width: 100%;
+  border: 1;
+  padding: 0;
+  margin:0;
+  background-color: var(--col_w);
 }
 
 input.follow{

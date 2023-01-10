@@ -42,7 +42,7 @@ require("util.php");
     ?>
 
     <body>
-        <?php include "./sidenav.html";?>
+        <?php include "./sidenav.php";?>
         
         <div id="main">
             <h1>Główna</h1>

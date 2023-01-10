@@ -46,7 +46,7 @@ $results = mysqli_query($db,
 
     <body>
         <div id="main">
-        <?php include "./sidenav.html";?>
+        <?php include "./sidenav.php";?>
         <h1>Powiadomienia</h1>
         <?php
         while ($post = mysqli_fetch_array($results)) {

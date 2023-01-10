@@ -83,14 +83,14 @@ function postTemplate($db, int $id, int $profile_id, ?string $image_path, string
         <div class="meta">
             <div class="author" >
                 <a href="<?=urlGET('/Profile.php',array('id'=>$profile_id))?>">
-                    <img class="avatar" src="<?=('./profile_pics/'.$prof_image_path)?>">
+                    <img class="avatar" src="<?=(AVATAR_DIR.$prof_image_path)?>">
                     <?=$author?>
                 </a>
                 ·
                 <small><?=$creation_time?></small>
             </div> 
-            
         </div>
+        </br>
         <div class="content">
             <?=nl2br($text)?>
         </div>
@@ -139,20 +139,21 @@ function commentTemplate(string $author, string $prof_pic, int $author_id, strin
     ?>
     <div class="comment">
         <div class="meta">
-            <a class="author">
-                <img class="prof_pic" src="<?=('./profile_pics/'.$prof_pic)?>">
-                <?=$author?>
+            <div class="author">
+                <a href="<?=urlGET('/Profile.php',array('id'=>$author_id))?>">
+                    <img class="avatar" src="<?=(AVATAR_DIR.$prof_pic)?>">
+                    <?=$author?>
+                </a>
                 ·
                 <small><?=$date?></small>
-            </a> 
-        
+            </div> 
         </div>
-        <p><?=nl2br($content)?></p>
+        <p style="float:left;"><?=nl2br($content)?></p>
         <?php
         if ($author_id == $_SESSION['user_id']):
         ?>
         <form method="POST" action="<?=urlGET('./post.php',array('id'=>$post_id))?>">
-            <button type="submit" name="delete" value="<?=$comm_id?>">Delete</button>
+            <button style="float:right;" type="submit" name="delete" value="<?=$comm_id?>">Delete</button>
         </form>
         <?php endif;?>
     </div>

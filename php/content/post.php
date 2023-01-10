@@ -11,7 +11,9 @@ $id = $_GET['id'];
 
 $db = mysqli_connect("db", "mysql_user", "mysql_pass", "app",3306);
 $result = mysqli_query($db, 
-    "SELECT prof.username as author,
+    "SELECT 
+    prof.id as prof_id,
+    prof.username as author,
     prof_img.image_path as prof,
     image.image_path as image,
     p.content as cont,
@@ -50,19 +52,22 @@ if (!$post) {
 
     <body>
         <div id="main">
-        <?php include "./sidenav.html" ?>
+        <?php include "./sidenav.php" ?>
         
         <div class="post">
             <div class="meta">
-                <a class="author">
-                    <img class="prof_pic" src="<?=('./profile_pics/'.$post['prof'])?>">
-                    <?=$post["author"]?>
+                <div class="author">
+                    <a href="<?=urlGET('/Profile.php',array('id'=>$post["prof_id"]))?>">
+                        <img class="avatar" src="<?=('./profile_pics/'.$post['prof'])?>">
+                        <?=$post["author"]?>
+                    </a>
                     ·
-                    <small><?=$post["cre_time"]?></small>
-                </a> 
-                
+                    <small><?=$post["cre_time"]?></small> 
+                </div>
             </div>
+            </br>
             </hr>
+            
             <p>
                 <?=nl2br($post["cont"])?>
             </p>
