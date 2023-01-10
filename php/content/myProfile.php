@@ -11,7 +11,7 @@ if (!isset($_GET['id'])){
     header("Location: home.php");
 }
 
-
+$id = $_GET['id'];
 
 $db = mysqli_connect("db", "mysql_user", "mysql_pass", "app",3306);
 $profile_results = mysqli_query($db, "SELECT
@@ -25,23 +25,6 @@ $profile_results = mysqli_query($db, "SELECT
                                       WHERE p.id = {$_GET['id']};");   
 
 $row = mysqli_fetch_array($profile_results);
-
-
-$result = mysqli_query($db, "SELECT 
-                             prof.username as author, 
-                             prof_i.image_path as prof_pic,
-                             p.content as cont, 
-                             p.creation_date as cre_time, 
-                             p.id as id, 
-                             prof.id as prof_id
-                             FROM Post p 
-                             INNER JOIN Profile prof ON prof.id=p.author_id 
-                             INNER JOIN Image prof_i ON prof_i.id=prof.profile_picture_id 
-                             WHERE prof.id = {$_GET['id']}
-                             ORDER BY p.creation_date DESC;");  
-
-
-
 ?>
 
 <!DOCTYPE html>
@@ -65,47 +48,40 @@ $result = mysqli_query($db, "SELECT
                 font-size: 100px;
                 height: 100px;
             }
-            h2{
-                width: 400px;
-            }
             #opis{
                 font-size: 50px;
                 height: 80px;
-            }
-            img{
-                height: 150px;
-                text-align: top;
             }
         </style>
     </head>
 
     <body>
         <div id="main">
-        <?php include "./sidenav.html" ?>
+        <?php include "./sidenav.php" ?>
 
-        <div>
-            <img>
-        </div>
             <img class='avatar' id="icon" src="<?=AVATAR_DIR.$row['prof_pic']?>"></img>
-            <h1><?=$row['username']?></h1> 
-            <div id="opis">
-                <?= $row['profile_desc'] ?>
-            </div>
 
             <div id="change">
-                <form method="POST" action="verify.php">
-                    Zmień nazwę: </br><input type="text" name="login"></input>
+                <form id="edit_profile" method="POST" action="<?=urlGET('Profile.php',array('id'=>$id))?>">
+                    Zmień nazwę: </br><input type="text" name="login" value="<?=$row['username']?>"></input>
+                    Zmień opis: <textarea value="<?=$row['profile_desc']?>" name="desc"></textarea>
+                    <input type="submit" name="sub"></input>
                 </form>
             </div>
-        
-                <h2>Posts</h2>
-
-            <?php while($post=mysqli_fetch_array($result)){
-                $url = urlGET('/post.php',array('id'=>$post['id']));
-                postTemplate($db, $post['id'], $post['prof_id'], $post['pic'], $post['prof_pic'], $post['author'], $post['cre_time'],$post['cont']);    
+            <?php
+            if (isset($_POST['sub'])) {
+                mysqli_query($db, "UPDATE Profile 
+                                    INNER JOIN User 
+                                    ON User.profile_id = Profile.id
+                                    SET 
+                                        User.username='{$_POST['login']}',
+                                        Profile.username='{$_POST['login']}',
+                                        Profile.profile_desc='{$_POST['desc']}'
+                                    WHERE User.id={$id};
+                                    ");
+                $_SESSION['login'] = $_POST['login'];
             }
-        ?>
-
+            ?>
         </div>
     </body>
 </html>
