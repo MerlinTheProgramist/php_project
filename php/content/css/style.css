@@ -3,18 +3,13 @@
   --col_min: #31746d;
   --col_p: #de6000;
   --col_w: #CFD2CF;
-  --col_post: #E0C9A6;
+  --col_post: #b2b2b2;
   --nav_size: 100px;
 }
 
 @font-face {
   font-family: 'shure';
   src: url('../res/Shure Tech Mono Nerd Font Complete Mono.ttf');
-}
-
-@font-face{
-  font-family: 'space';
-  src: url('../res/space age.ttf');
 }
 
 @font-face {
@@ -52,6 +47,8 @@ textarea{
   border: 0;
   padding: 10px;
   background-color: var(--col_post);
+
+  color: var(--col_main);
 }
 textarea:focus{
   outline: none !important;
@@ -70,7 +67,12 @@ input[type="submit"]
   padding: 3%;
   border-radius: 10px;
 
-  width: 90%;
+  width: 70%;
+  margin: 10px;
+}
+
+h1{
+  font-family: space;
 }
 
 input[type=text], 
@@ -85,7 +87,7 @@ input[type=password]{
 
 #main{
   margin: auto;
-  width: 35%;
+  width: 40%;
   padding: 10px 10px 10px;
   
   text-align: center;
@@ -93,6 +95,14 @@ input[type=password]{
   border: solid 3px var(--col_main);
   border-radius: 20px;
 }
+
+@media screen and (max-width: 1200px)
+{
+  #main{
+    width: 70%;
+  }
+}
+
 
 #sidenav{
   height: 100%;
@@ -107,27 +117,27 @@ input[type=password]{
   padding: 6px 5px 6px 5px; /* top, right, bottom, left */
   background-color: white;
 }
-
 #sidenav>.button{
   height: var(--nav_size);
+  margin: 5% 0;
 }
-
-#sidenav>.button #newPost{
+#sidenav>.button#newPost{
   border: 0 solid white;
   border-radius: 50%;
   width: 100%;
+  background-color: rgb(4, 163, 249);
+  text-decoration: none;
+  font-size: 500%;
+  color:var(--col_w);
+  text-align: center;
 
-  background-color: greenyellow;
 
 }
-
-
 #sidenav>.end{
   bottom: 0;
   height:10vh;
 
 }
-
 a.button, a.button>*{
   float: left;
   width: 100%;
@@ -137,8 +147,8 @@ a.button, a.button>*{
 .post{
   background-color: var(--col_post);
   color: #101010;
-  border: 0 0 0;
-  border-radius: 30;
+  border: 1, solid, var(--col_post); 
+  border-radius: 20px;
 
   padding: 10px;
   margin-top:30px;
@@ -183,7 +193,8 @@ a.button, a.button>*{
 }
 
 .post>img{
-  width:100%;
+  width:70%;
+  margin: 1vw 0px;
   object-fit: contain;
 }
 
@@ -191,23 +202,37 @@ td{
   padding: 0 30px 0 0;
 }
 
+.actions{
+  width: 20%;
+  margin-left: 10px;
+  margin-right: 10%;
+}
+
 .actions>input[type=submit]{
   
 }
 
-.actions .heart{
-  font-size:large;
+
+.actions .icon{
+  height: 2.5vh;
+  z-index: -1;
+}
+
+.actions button{
+  font-size:150%;
   float: left;
+  background-color: transparent;
+  border: none;
 }
 .actions .heart::before{
-  color:gray;
+  color:rgb(0, 0, 0);
   content: "♡";
 }
 .actions .heart[fill]::before{
   color:red;
   content: "❤";
 }
-
+.actions 
 
 .comment{
   background-color: var(--col_post);
@@ -251,7 +276,6 @@ td{
   resize: none;
   width: 100%;
   border: 1;
-  padding: 0;
   margin:0;
   background-color: var(--col_w);
 }
@@ -345,4 +369,9 @@ fieldset {
   padding-top: 1em;
   padding-bottom: 1em;
   color: black;
+}
+
+#change textarea{
+  width: 70%;
+  background-color: white;
 }

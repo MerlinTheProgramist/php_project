@@ -32,12 +32,13 @@ require("util.php");
 
     <body>
         <div id="main">
-        <?php include "./sidenav.html" ?>
+        <?php include "./sidenav.php" ?>
         
         <form method="POST" id="newPost" enctype="multipart/form-data">
             <textarea type='text' name="cont"></textarea>
-            <input type="file" name="upload_image"></input>
+            <input id="file" onclick="showImage()" type="file" name="upload_image" accept=".jpg,.png,.jpeg,.gif,.webp">Dodaj obraz</input>
             <button type='submit' name="sub">Zapostuj</button>
+            <img id="file_preview">
         </form>
         <?php
         if (isset($_POST["sub"])) {
@@ -45,22 +46,9 @@ require("util.php");
             if (!empty($text)) {
                 $db = mysqli_connect("db", "mysql_user", "mysql_pass", "app", 3306);
 
-                $image_id = 0;
-                if ($_FILES['upload_image']['error'] <= UPLOAD_ERR_OK && getimagesize($_FILES["upload_image"]["tmp_name"]) !== false) {
+                $image_id = uploadImage_getId($db);
 
-                    $path_parts = pathinfo($_FILES["upload_image"]["name"]);
-                    $extension = $path_parts['extension'];
-
-                    $source = $_FILES["upload_image"]["tmp_name"];
-                    $name = uniqid() . "-" . time() .".". $extension;
-                    $destination = UPLOAD_DIR . $name;
-
-                    move_uploaded_file($source, $destination);
-                    mysqli_query($db, "INSERT INTO Image (image_path) VALUES ('{$name}');");
-                    $image_id = mysqli_insert_id($db);
-                }
-
-                $image_id = ($image_id == 0) ? 'null' : $image_id;
+                $image_id = ($image_id == -1) ? 'null' : $image_id;
                 mysqli_query($db, "INSERT INTO Post
                                    (author_id, content, image_id) 
                                    VALUES ({$_SESSION['user_id']},'{$text}',{$image_id});");
@@ -73,6 +61,20 @@ require("util.php");
         </div>
     </body>
     <script>
+        var file = document.getElementById('file').files[0];
+        var preview = document.getElementById('file_preview')
+        function showImage() {    
+            var reader  = new FileReader();
+            // it's onload event and you forgot (parameters)
+            reader.onload = function(e)  {
+                if(result)
+                // the result image data
+                preview.src = e.target.result;
+            }
+            // you have to declare the file loading
+            reader.readAsDataURL(file);
+        }
+
         if ( window.history.replaceState ) {
             window.history.replaceState( null, null, window.location.href );
         }

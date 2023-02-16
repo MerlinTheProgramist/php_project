@@ -1,7 +1,18 @@
+<script>
+    function copyText(text)
+    {
+        navigator.clipboard.writeText(window.location.hostname+":"+window.location.port+text);
+        alert('skopiowano link to schowka');
+    }
+</script>
+
 <?php
 // CONSTANTS
 const UPLOAD_DIR = "images/";
 const AVATAR_DIR = "profile_pics/";
+const MAX_QUERRY_POSTS = 10;
+
+
 
 function urlGET($url,$params=array()) {
     if(!$params) return $url;
@@ -95,6 +106,7 @@ function postTemplate($db, int $id, int $profile_id, ?string $image_path, string
             <?=nl2br($text)?>
         </div>
         <?php if(!empty($image_path)): ?>
+            
             <img src="<?=UPLOAD_DIR.$image_path?>"></img>
         <?php endif; ?>
         <hr>
@@ -112,10 +124,11 @@ function postTemplate($db, int $id, int $profile_id, ?string $image_path, string
         }
         $hearths = mysqli_fetch_array(mysqli_query($db, "SELECT count(1) as num FROM Heart h WHERE h.post_id={$id};"));            
         ?>
+
         <table class="actions">
             <td>
                 <a href="<?=$url?>">
-                Comm
+                <img class="icon" src="./res/comment_icon.png"/>
                 </a>
             </td>
             <td>
@@ -125,8 +138,8 @@ function postTemplate($db, int $id, int $profile_id, ?string $image_path, string
                 </form>
             </td>
             <td>
-                <button onclick="copyText('<?=$url?>')">
-                Share <!-- copy link to clickboard -->
+                <button onclick="copyText('<?=$url?>');"><!-- copy link to clickboard -->
+                    <img class="icon" src="./res/share_icon.png"/>  
                 </button>
             </td>
         </table>
@@ -158,6 +171,34 @@ function commentTemplate(string $author, string $prof_pic, int $author_id, strin
         <?php endif;?>
     </div>
     <?php
+}
+
+function validatePassword(string $password)
+{
+$uppercase = preg_match('#[A-Z]+#', $password) !==false;
+$lowercase = preg_match('#[a-z]+#', $password) !==false;
+$number    = preg_match('#[0-9]+#', $password) !==false;
+$specialChars = preg_match('#[^\w]+#', $password) !==false;
+
+return $uppercase && $lowercase && $number && $specialChars && strlen($password) >= 8;
+}
+
+function uploadImage_getId($db) : int
+{
+    if ($_FILES['upload_image']['error'] <= UPLOAD_ERR_OK && getimagesize($_FILES["upload_image"]["tmp_name"]) !== false) {
+
+        $path_parts = pathinfo($_FILES["upload_image"]["name"]);
+        $extension = $path_parts['extension'];
+
+        $source = $_FILES["upload_image"]["tmp_name"];
+        $name = uniqid() . "-" . time() .".". $extension;
+        $destination = UPLOAD_DIR . $name;
+
+        move_uploaded_file($source, $destination);
+        mysqli_query($db, "INSERT INTO Image (image_path) VALUES ('{$name}');");
+        return mysqli_insert_id($db);
+    }
+    return -1;
 }
 
 ?>

@@ -27,10 +27,10 @@ if ($_POST["sub"] == "Login") {
     ");
     $data = mysqli_fetch_array($result);
     if(!$data)
-        set_n_head("./login.php", array('mess'=>"login or password was incorrect"));
+        set_n_head("./login.php", array('mess'=>"Nieprawidłowy login lub email lub hasło."));
     
-    $_SESSION["user_id"] = $data["id"];
     $_SESSION["auth"] = true;
+    $_SESSION["user_id"] = $data["id"];
     $_SESSION["login"] = $data["login"];
     $_SESSION["profile_pic"] = $data["image_path"];
 
@@ -41,8 +41,17 @@ else if ($_POST["sub"] == "Next") {
     $email = $_POST["email"];
     $pass2 = sha1($_POST["pass1"]);
 
+    if(!filter_var($email, FILTER_VALIDATE_EMAIL))
+        set_n_head("./register.php", array('mess' => "e-mail jest niepoprawny."));
+
+    if(!validatePassword($pass))
+        set_n_head("./register.php", array('mess' => 
+            "Haslo jest zbyt słabe, wymagane jest aby posiadało przynajmniej 8 znaków w tym małe i duże litery, cyfry oraz znaki specjalne."));
+
+    
+
     if ($pass != $pass2)
-        set_n_head("./register.php", array('mess' => "passwords didn't match"));
+        set_n_head("./register.php", array('mess' => "Hasła nie były takie same"));
 
     $db = mysqli_connect("db", "mysql_user", "mysql_pass", "app", 3306);
     // create account
@@ -50,10 +59,10 @@ else if ($_POST["sub"] == "Next") {
     // check if user already created
     $email_present = mysqli_query($db,"SELECT count(1) FROM User u WHERE u.email='{$email}'");
     if (mysqli_fetch_array($email_present)[0]>0) // user with this email already exists
-        set_n_head("./register.php", array('mess'=>"There is already an account with this email"));
+        set_n_head("./register.php", array('mess'=>"Konto z tym e-mailem już istnieje"));
     $username_present = mysqli_query($db,"SELECT count(1) FROM User u WHERE u.username='{$login}'");
     if (mysqli_fetch_array($username_present)[0]>0) // user with this name already exists
-        set_n_head("./register.php", array('mess'=>"Login is Occupied!</br> Please insert other Login"));
+        set_n_head("./register.php", array('mess'=>"Konto z tym loginem już istnieje"));
     
     
     $user_id = CreateUser($db, $email, $login, $pass);

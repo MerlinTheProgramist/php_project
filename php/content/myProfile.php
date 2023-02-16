@@ -2,29 +2,55 @@
 session_start();
 
 if (!isset($_SESSION["user_id"]))
-header("Location: login.php");
+    header("Location: login.php");
 
 require("util.php");
 
-
-if (!isset($_GET['id'])){
-    header("Location: home.php");
-}
-
-$id = $_GET['id'];
+$id = $_SESSION['user_id'];
 
 $db = mysqli_connect("db", "mysql_user", "mysql_pass", "app",3306);
 $profile_results = mysqli_query($db, "SELECT
                                       p.username, 
                                       p.profile_desc, 
+                                      u.email,
                                       i.image_path as prof_pic,
+                                      i.id as prof_id,
                                       f.followed_id as following
                                       FROM Profile p 
                                       INNER JOIN Image i ON i.id=p.profile_picture_id
-                                      LEFT JOIN Follow f ON f.follower_id={$_SESSION['user_id']} AND f.followed_id=p.id
+                                      INNER JOIN User u ON u.profile_id=p.id
+                                      LEFT JOIN Follow f ON f.follower_id={$id} AND f.followed_id=p.id
                                       WHERE p.id = {$_GET['id']};");   
 
 $row = mysqli_fetch_array($profile_results);
+
+if (isset($_POST['sub'])) {
+
+    // if avatar is to be changed
+    $image_id = uploadImage_getId($db);
+    if($image_id==-1) $image_id = $row['prof_id'];
+    
+
+    $out = mysqli_query($db, "UPDATE Profile 
+                        INNER JOIN User ON User.profile_id = Profile.id
+                        SET 
+                            User.username='{$_POST['login']}',
+                            Profile.profile_picture_id={$image_id},
+                            Profile.username='{$_POST['login']}',
+                            User.email='{$_POST['email']}',
+                            Profile.profile_desc='{$_POST['desc']}'
+                        WHERE User.id={$id};
+                        ");
+    if($out)
+    {
+        $_SESSION['login'] = $_POST['login'];
+        urlGET('Profile.php',array('id'=>$id));
+    }
+    else
+    {
+        
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -59,29 +85,18 @@ $row = mysqli_fetch_array($profile_results);
         <div id="main">
         <?php include "./sidenav.php" ?>
 
-            <img class='avatar' id="icon" src="<?=AVATAR_DIR.$row['prof_pic']?>"></img>
+            <img id='big_avatar' id="icon" src="<?=AVATAR_DIR.$row['prof_pic']?>"/>
 
             <div id="change">
-                <form id="edit_profile" method="POST" action="<?=urlGET('Profile.php',array('id'=>$id))?>">
-                    Zmień nazwę: </br><input type="text" name="login" value="<?=$row['username']?>"></input>
-                    Zmień opis: <textarea value="<?=$row['profile_desc']?>" name="desc"></textarea>
-                    <input type="submit" name="sub"></input>
+                <form id="edit_profile" method="POST" action="myProfile.php">
+                    Zmień avatar: <input id="file" onclick="showImage()" type="file" name="upload_image" accept=".jpg,.png,.jpeg,.gif,.webp"></br>
+                    Zmień nazwę: </br><input placeholder="login" type="text" name="login" value="<?=$row['username']?>"></input></br>
+                    Zmień e-mail: </br><input placeholder="e-mail" type="email" name="email" value="<?=$row['email']?>"></input></br>
+                    Zmień opis: </br><textarea placeholder="opisz siebie" value="<?=$row['profile_desc']?>" name="desc"></textarea></br>
+                    <button type="submit" name="sub">Zapisz</button>
                 </form>
             </div>
-            <?php
-            if (isset($_POST['sub'])) {
-                mysqli_query($db, "UPDATE Profile 
-                                    INNER JOIN User 
-                                    ON User.profile_id = Profile.id
-                                    SET 
-                                        User.username='{$_POST['login']}',
-                                        Profile.username='{$_POST['login']}',
-                                        Profile.profile_desc='{$_POST['desc']}'
-                                    WHERE User.id={$id};
-                                    ");
-                $_SESSION['login'] = $_POST['login'];
-            }
-            ?>
+            
         </div>
     </body>
 </html>
