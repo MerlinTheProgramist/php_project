@@ -166,7 +166,7 @@ function commentTemplate(string $author, string $prof_pic, int $author_id, strin
         if ($author_id == $_SESSION['user_id']):
         ?>
         <form method="POST" action="<?=urlGET('./post.php',array('id'=>$post_id))?>">
-            <button style="float:right;" type="submit" name="delete" value="<?=$comm_id?>">Delete</button>
+            <button class="del-button" style="float:right;" type="submit" name="delete" value="<?=$comm_id?>">Delete</button>
         </form>
         <?php endif;?>
     </div>

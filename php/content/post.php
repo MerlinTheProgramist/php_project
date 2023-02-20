@@ -81,9 +81,9 @@ if (!$post) {
         <div id="commets">
 
             <!-- New comment -->
-            <form method="POST" action="<?=urlGET('./post.php',array('id'=>$_GET['id']))?>">
-                <textarea type="text"  name="content"></textarea>
-                <button type="submit" name="sub">Comment</button>
+            <form class="new-com" method="POST" action="<?=urlGET('./post.php',array('id'=>$_GET['id']))?>">
+                <textarea class="com-field" type="text"  name="content"></textarea>
+                <button class="add-com" type="submit" name="sub">Dodaj</button>
             </form>
             <?php
                 if(isset($_POST["sub"]))

@@ -6,6 +6,13 @@ if (!isset($_SESSION["user_id"]))
 if (!isset($_GET['id']))
     header("Location: home.php");
 
+
+if(!isset($_GET['page']))
+{
+    header("Location: Profile.php?id={$_GET['id']}&page=0");
+    die();
+}
+
 require("util.php");
 
 $id = $_GET['id'];
@@ -91,7 +98,7 @@ $result = mysqli_query($db, "SELECT
 
             <?php while($post=mysqli_fetch_array($result)){
                 $url = urlGET('/post.php',array('id'=>$post['id']));
-                postTemplate($db, $post['id'], $id, $post['pic'], $row['prof_pic'], $row['username'], $post['cre_time'],$post['cont']);    
+                postTemplate($db, intval($post['id']), $id, $post['pic'], $row['prof_pic'], $row['username'], strval($post['cre_time']),strval($post['cont']));    
             }
             ?>
 

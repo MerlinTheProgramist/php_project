@@ -43,7 +43,7 @@ require("util.php");
         <?php
         if (isset($_POST["sub"])) {
             $text = $_POST['cont'];
-            if (!empty($text)) {
+            if (!empty($text) && $text!="") {
                 $db = mysqli_connect("db", "mysql_user", "mysql_pass", "app", 3306);
 
                 $image_id = uploadImage_getId($db);

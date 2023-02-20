@@ -8,13 +8,15 @@ if (!isset($_SESSION["user_id"]))
     die();
 }
 
-require("util.php");
 
 if(!isset($_GET['page']))
-    GET_n_head('home.php',array('page'=>'0'));
+{
+    header('Location: home.php?page=0');
+    die();
+}
 $page_num = intval($_GET['page']);
 
-
+require("util.php");
 ?>
 
 <!DOCTYPE html>

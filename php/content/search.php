@@ -36,20 +36,20 @@ require("util.php");
                     <input type="text" name="text"
                     value="<?=$_GET['text']?>"
                     ></input>
-                    <button type="submit" name="ser">Search</button>
+                    <button id="search-sub" type="submit" name="ser">Search</button>
                     <fieldset>
-                        <label> Wszystko
+                        <label class="filter"> Wszystko
                         <input type="radio" name="results"
                         <?=(!isset($results) || $results=="All")?"checked":""?>
                         value="All"></input></label>
 
 
-                        <label> Użytkownicy
+                        <label class="filter"> Użytkownicy
                         <input type="radio" name="results"
                         <?=(isset($results) && $results=="Users")?"checked":""?>
                         value="Users"></input></label>
 
-                        <label> Posty
+                        <label class="filter"> Posty
                         <input type="radio" name="results"
                         <?=(isset($results) && $results=="Posts")?"checked":""?>
                         value="Posts"></input></label>
